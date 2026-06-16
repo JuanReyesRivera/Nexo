@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXO — ContractOS OTIC CChC</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script type="module" crossorigin src="/assets/index-F-F8WJxA.js"></script>
+</head>
+<body>
+  <div id="toast"></div>
+
+  <!-- AUTH -->
+  <div id="auth-screen">
+    <div class="auth-bg">
+      <div class="auth-card">
+        <div class="logo-block">
+          <img src="/logo.png" alt="OTIC CChC" id="auth-logo" onerror="this.style.display='none'">
+          <div class="logo-name">NEXO</div>
+          <div class="logo-sub">Gestión contractual · OTIC CChC</div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="authTab('login',this)">Iniciar sesión</button>
+          <button class="tab-btn" onclick="authTab('reg',this)">Registrarse</button>
+          <button class="tab-btn" onclick="authTab('rec',this)">Recuperar contraseña</button>
+        </div>
+        <div id="pn-login" class="auth-pane">
+          <p class="pane-title">Bienvenido/a</p>
+          <p class="pane-sub">Ingresa tus credenciales para acceder a NEXO</p>
+          <div id="lerr" class="alert-err"></div>
+          <div class="field"><label class="lbl">Email</label>
+            <input id="lem" type="email" placeholder="usuario@otic-cchc.cl" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"></div>
+          <div class="field"><label class="lbl">Contraseña</label>
+            <div style="position:relative">
+              <input id="lpw" type="password" placeholder="••••••••" style="padding-right:36px" onkeydown="if(event.key==='Enter')doLogin()">
+              <button onclick="toggleEye('lpw',this)" type="button" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#bbb;font-size:14px" aria-label="Ver contraseña"><i class="ti ti-eye"></i></button>
+            </div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#666;cursor:pointer"><input type="checkbox"> Recordarme</label>
+            <button class="pol-link" onclick="authTab('rec',document.querySelectorAll('.tab-btn')[2])">¿Olvidaste tu contraseña?</button>
+          </div>
+          <button class="btn-main" onclick="doLogin()"><i class="ti ti-login"></i> Iniciar sesión</button>
+          <p style="margin-top:12px;text-align:center;font-size:12px;color:#999">¿No tienes cuenta? <button class="pol-link" onclick="authTab('reg',document.querySelectorAll('.tab-btn')[1])">Regístrate aquí</button></p>
+          <div class="demo-hint">
+            <strong style="color:#1a4f8a">Accesos de prueba:</strong><br>
+            <code>admin@otic.cl / admin123</code> → Administrador<br>
+            <code>fiscal@otic.cl / fiscal123</code> → Operador<br>
+            <code>empresa@otic.cl / emp123</code> → Colaborador
+          </div>
+        </div>
+        <div id="pn-reg" class="auth-pane" style="display:none">
+          <p class="pane-title">Crear cuenta en NEXO</p>
+          <p class="pane-sub">Tu solicitud será revisada por un administrador</p>
+          <div id="rerr" class="alert-err"></div>
+          <div id="rok" class="alert-ok"></div>
+          <div class="field"><label class="lbl">Nombre completo</label><input id="rnm" placeholder="Juan Rodríguez"></div>
+          <div class="field"><label class="lbl">Email corporativo</label><input id="rem" type="email" placeholder="usuario@empresa.cl"></div>
+          <div class="field"><label class="lbl">Empresa / Organización</label><input id="remp" placeholder="Constructora Ejemplo Ltda."></div>
+          <div class="field"><label class="lbl">Rol solicitado</label>
+            <select id="rrol"><option value="colaborador">Colaborador — Empresa / Contraparte OTIC</option><option value="operador">Operador — Fiscalía / Gerencia</option></select></div>
+          <div class="field"><label class="lbl">Contraseña (mín. 8 caracteres)</label><input id="rpw" type="password" placeholder="••••••••"></div>
+          <div class="field"><label class="lbl">Confirmar contraseña</label><input id="rpw2" type="password" placeholder="••••••••"></div>
+          <div class="policy-accept-block">
+            <label class="chk-label"><input type="checkbox" id="chk-pp"><span>He leído y acepto la <button class="pol-link" onclick="openPol('pp')">Política de Privacidad</button></span></label>
+            <label class="chk-label"><input type="checkbox" id="chk-tu"><span>He leído y acepto los <button class="pol-link" onclick="openPol('tu')">Términos de Uso</button></span></label>
+          </div>
+          <button class="btn-main" onclick="doReg()"><i class="ti ti-user-plus"></i> Solicitar acceso</button>
+          <p style="margin-top:10px;text-align:center"><button class="pol-link" onclick="authTab('login',document.querySelectorAll('.tab-btn')[0])">← Volver al inicio</button></p>
+        </div>
+        <div id="pn-rec" class="auth-pane" style="display:none">
+          <p class="pane-title">Recuperar contraseña</p>
+          <p class="pane-sub">Ingresa tu email y te enviaremos las instrucciones</p>
+          <div id="recok" class="alert-ok"></div>
+          <div class="field"><label class="lbl">Email registrado</label><input id="rece" type="email" placeholder="usuario@otic-cchc.cl"></div>
+          <button class="btn-main" onclick="doRec()"><i class="ti ti-mail"></i> Enviar instrucciones</button>
+          <p style="margin-top:10px;text-align:center"><button class="pol-link" onclick="authTab('login',document.querySelectorAll('.tab-btn')[0])">← Volver al inicio</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POLÍTICAS -->
+  <div id="pol-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;overflow-y:auto;padding:20px">
+    <div style="background:#fff;border-radius:14px;max-width:760px;margin:0 auto">
+      <div style="padding:18px 24px;border-bottom:1px solid #e8ecf0;display:flex;align-items:center;gap:10px;position:sticky;top:0;background:#fff;border-radius:14px 14px 0 0;z-index:1">
+        <span style="background:#1a4f8a;color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px">NEXO</span>
+        <span style="font-size:14px;font-weight:600;flex:1" id="pol-modal-title"></span>
+        <button onclick="closePol()" style="background:none;border:none;cursor:pointer;font-size:18px;color:#888">✕</button>
+      </div>
+      <div style="padding:24px" id="pol-modal-body"></div>
+      <div style="padding:16px 24px;border-top:1px solid #e8ecf0;display:flex;justify-content:flex-end">
+        <button class="btn btn-primary" onclick="closePol()"><i class="ti ti-check"></i> Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app-screen" style="display:none">
+    <div class="app-wrap">
+      <div class="sidebar">
+        <div class="sb-head">
+          <img src="/logo.png" alt="OTIC CChC" style="width:34px;height:auto;margin-bottom:6px;display:block" onerror="this.style.display='none'">
+          <div class="sb-brand">NEXO</div>
+          <div class="sb-sub">OTIC CChC · CLM</div>
+        </div>
+        <div class="sb-user">
+          <div class="avatar" id="nav-avatar"></div>
+          <div><div class="sb-nm" id="nav-name">—</div><div class="sb-rl" id="nav-role">—</div></div>
+        </div>
+        <div class="nav-area" id="sidebar-nav"></div>
+        <button class="sb-logout" onclick="doLogout()"><i class="ti ti-logout"></i> Cerrar sesión</button>
+      </div>
+      <div class="main-area">
+        <div class="topbar">
+          <div class="tb-brand">NEXO</div>
+          <div class="tb-sep"></div>
+          <div class="tb-title" id="ptitle">Dashboard</div>
+          <div id="topbar-role"></div>
+        </div>
+        <div class="content" id="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="mc-grid" id="dash-metrics"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:500">Procesos activos</div>
+        <button class="btn" onclick="nav('repositorio')">Ver todos</button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>ID</th><th>Contraparte / empresa</th><th>Tipo</th><th>Etapa actual</th><th>Actor en turno</th><th>Días</th><th>Estado</th></tr></thead>
+        <tbody id="dash-tbody"></tbody>
+      </table></div>
+      <div class="two">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-git-merge" aria-hidden="true" style="color:#1a4f8a"></i> Requieren acción hoy</div>
+          <div id="dash-acciones"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-activity" aria-hidden="true"></i> Actividad reciente</div>
+          <ul class="tl" id="dash-actividad"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. SOLICITUDES -->
+    <div class="page" id="page-solicitudes">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <p style="font-size:12px;color:var(--color-text-secondary)"><span class="actor-o">OTIC</span> levanta la solicitud. <span class="actor-f">Fiscalía</span> decide si la información está completa.</p>
+        <button class="btn btnp" onclick="abrirNuevaSolicitud()"><i class="ti ti-plus" aria-hidden="true"></i> Nueva solicitud</button>
+      </div>
+      <div id="sol-pendientes"></div>
+      <div style="font-size:12px;font-weight:500;margin-bottom:8px;margin-top:4px">Historial</div>
+      <div class="tw"><table>
+        <thead><tr><th>ID</th><th>Descripción</th><th>Empresa</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="sol-hist-tbody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 2. REVISIÓN DOCS -->
+    <div class="page" id="page-revision">
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:14px"><span class="actor-f">Fiscalía</span> verifica que todos los documentos requeridos estén completos antes de elaborar el borrador.</p>
+      <div id="rev-content"></div>
+    </div>
+
+    <!-- 3. EDITOR -->
+    <div class="page" id="page-editor">
+      <div id="ed-content"></div>
+    </div>
+
+    <!-- 4. NEGOCIACIÓN -->
+    <div class="page" id="page-negociacion">
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:14px">El borrador circula entre <span class="actor-f">Fiscalía</span>, <span class="actor-o">OTIC</span> y <span class="actor-e">Empresa</span> hasta una versión acordada sin observaciones.</p>
+      <div id="neg-content"></div>
+    </div>
+
+    <!-- 5. VB -->
+    <div class="page" id="page-vb">
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:14px"><span class="actor-f">Fiscalía</span> informa a Gerencia y al Fiscal para obtener el Visto Bueno antes de la firma.</p>
+      <div id="vb-content"></div>
+    </div>
+
+    <!-- 6. FIRMA -->
+    <div class="page" id="page-firma">
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:14px">Registro de firma simple por <span class="actor-f">Fiscalía</span>, <span class="actor-o">OTIC</span> y <span class="actor-e">Empresa</span>.</p>
+      <div id="firma-content"></div>
+    </div>
+
+    <!-- REPOSITORIO -->
+    <div class="page" id="page-repositorio">
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+        <input class="fi" id="repo-q" style="width:180px" placeholder="Buscar..." oninput="renderRepo()">
+        <select class="fsel" id="repo-etapa" style="width:150px" onchange="renderRepo()">
+          <option value="">Todas las etapas</option>
+          <option value="Solicitud">Solicitud</option>
+          <option value="Revisión docs">Revisión docs</option>
+          <option value="Borrador">Borrador</option>
+          <option value="Negociación">Negociación</option>
+          <option value="VB pendiente">VB pendiente</option>
+          <option value="Firma pendiente">Firma pendiente</option>
+          <option value="Firmado">Firmado</option>
+          <option value="Vencido">Vencido</option>
+        </select>
+        <button class="btn" onclick="exportExcel()"><i class="ti ti-table" aria-hidden="true"></i> Excel</button>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px">Mostrando <span id="repo-count">0</span> contratos</div>
+      <div class="tw"><table>
+        <thead><tr><th>ID</th><th>Contraparte</th><th>Tipo</th><th>Monto</th><th>Vencimiento</th><th>Etapa</th><th>Actor</th><th>Estado</th></tr></thead>
+        <tbody id="repo-tbody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- ALERTAS -->
+    <div class="page" id="page-alertas">
+      <div id="alertas-content"></div>
+    </div>
+
+    <!-- REPORTES -->
+    <div class="page" id="page-reportes">
+      <div class="mc-grid" id="rep-metrics"></div>
+      <div class="two">
+        <div class="card">
+          <div class="card-title">Por etapa del proceso</div>
+          <div id="rep-etapas"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Exportar reportes</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="rep-exports"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANTILLAS -->
+    <div class="page" id="page-plantillas">
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:14px">Selecciona una plantilla para cargarla en el editor. Próximamente podrás reemplazarlas con tus formatos .docx reales.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px" id="plantillas-grid"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-wrap" style="display:none;background:rgba(0,0,0,.42);min-height:500px;align-items:flex-start;justify-content:flex-end;margin-top:1px">
+  <div style="width:460px;background:var(--color-background-primary);min-height:500px;overflow-y:auto;padding:20px;border-left:0.5px solid var(--color-border-tertiary)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:500" id="modal-title">Modal</div>
+      <div style="cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:6px" onclick="closeModal()"><i class="ti ti-x" aria-hidden="true"></i></div>
+    </div>
+    <div id="modal-body"></div>
+  
+<!-- ADMIN: USUARIOS -->
+    
+    </div>
+  </div>
+
+</body>
+</html>
